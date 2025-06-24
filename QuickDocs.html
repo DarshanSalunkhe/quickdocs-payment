@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickDocs Payment</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+        h1 { text-align: center; }
+        input[type=number] { width: 100%; padding: 8px; margin: 5px 0 15px; }
+        button { padding: 10px; background-color: #008CBA; color: white; border: none; width: 100%; font-size: 16px; cursor: pointer; }
+        button:hover { background-color: #005f73; }
+        .total { font-size: 18px; margin: 10px 0; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>QuickDocs Payment</h1><label>Rubrics (₹2 each)</label>
+<input type="number" id="rubricsQty" value="0" min="0">
+
+<label>B/W Printouts (₹2.5 each)</label>
+<input type="number" id="bwQty" value="0" min="0">
+
+<label>Colour Printouts (₹8 each)</label>
+<input type="number" id="colorQty" value="0" min="0">
+
+<div class="total">Total: ₹<span id="totalAmount">0.00</span></div>
+
+<button onclick="startPayment()">Pay with Razorpay</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    function calculateTotal() {
+        const rubrics = parseInt(document.getElementById("rubricsQty").value || 0);
+        const bw = parseInt(document.getElementById("bwQty").value || 0);
+        const color = parseInt(document.getElementById("colorQty").value || 0);
+
+        const total = (rubrics * 2) + (bw * 2.5) + (color * 8);
+        document.getElementById("totalAmount").textContent = total.toFixed(2);
+        return total;
+    }
+
+    document.querySelectorAll("input[type=number]").forEach(input => {
+        input.addEventListener("input", calculateTotal);
+    });
+
+    function startPayment() {
+        const amount = calculateTotal();
+        if (amount <= 0) {
+            alert("Please enter quantities to proceed.");
+            return;
+        }
+
+        var options = {
+            "key": "RAZORPAY_API_KEY", // Replace with your Razorpay API key
+            "amount": amount * 100, // in paise
+            "currency": "INR",
+            "name": "QuickDocs",
+            "description": "Print Services Payment",
+            "image": "", // Optional: add your logo URL
+            "handler": function (response){
+                alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+            },
+            "prefill": {
+                "name": "",
+                "email": "",
+                "contact": ""
+            },
+            "theme": {
+                "color": "#008CBA"
+            }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+    }
+</script>
+
+</body>
+</html>
