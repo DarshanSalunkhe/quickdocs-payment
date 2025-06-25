@@ -1,77 +1,236 @@
 <!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickDocs Payment</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
-        h1 { text-align: center; }
-        input[type=number] { width: 100%; padding: 8px; margin: 5px 0 15px; }
-        button { padding: 10px; background-color: #008CBA; color: white; border: none; width: 100%; font-size: 16px; cursor: pointer; }
-        button:hover { background-color: #005f73; }
-        .total { font-size: 18px; margin: 10px 0; text-align: center; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickDocs Payment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      color: #333;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h2 {
+      color: #1a237e;
+      margin-bottom: 20px;
+    }
+    input[type="email"], input[type="tel"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+    .service-options {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .service-options .option {
+      flex: 1;
+      margin: 0 5px;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .service-options .option.selected {
+      border-color: #1a237e;
+      background-color: #e8eaf6;
+    }
+    .counter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    .counter button {
+      padding: 10px;
+      font-size: 18px;
+      border: none;
+      background-color: #1a237e;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .counter span {
+      padding: 0 20px;
+      font-size: 18px;
+    }
+    .price-display {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .pay-btn {
+      width: 100%;
+      padding: 15px;
+      background-color: #1a237e;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+    }
+    .footer-link {
+      color: #1a237e;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-    <h1>QuickDocs Payment</h1><label>Rubrics (₹2 each)</label>
-<input type="number" id="rubricsQty" value="0" min="0">
+  <div class="container">
+    <h2>Payment Details</h2><label for="email">Email</label>
+<input type="email" id="email" placeholder="Enter your email">
 
-<label>B/W Printouts (₹2.5 each)</label>
-<input type="number" id="bwQty" value="0" min="0">
+<label for="phone">Phone</label>
+<input type="tel" id="phone" placeholder="Enter your phone">
 
-<label>Colour Printouts (₹8 each)</label>
-<input type="number" id="colorQty" value="0" min="0">
+<label>Select the services you need</label>
+<div class="service-options">
+  <div class="option" data-type="bw">B/W Print</div>
+  <div class="option" data-type="color">Color Print</div>
+  <div class="option" data-type="rubrics">Rubrics</div>
+</div>
 
-<div class="total">Total: ₹<span id="totalAmount">0.00</span></div>
+<label>Select the number of pages in your document</label>
+<div class="counter">
+  <button onclick="updateCount(-1, 'pages')">-</button>
+  <span id="pageCount">1</span>
+  <button onclick="updateCount(1, 'pages')">+</button>
+</div>
 
-<button onclick="startPayment()">Pay with Razorpay</button>
+<label>Select the number of copies</label>
+<div class="counter">
+  <button onclick="updateCount(-1, 'copies')">-</button>
+  <span id="copyCount">1</span>
+  <button onclick="updateCount(1, 'copies')">+</button>
+</div>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-    function calculateTotal() {
-        const rubrics = parseInt(document.getElementById("rubricsQty").value || 0);
-        const bw = parseInt(document.getElementById("bwQty").value || 0);
-        const color = parseInt(document.getElementById("colorQty").value || 0);
+<div class="price-display">
+  <span id="priceText">Price will be calculated based on selection.</span>
+</div>
 
-        const total = (rubrics * 2) + (bw * 2.5) + (color * 8);
-        document.getElementById("totalAmount").textContent = total.toFixed(2);
-        return total;
-    }
+<button class="pay-btn" onclick="payNow()" id="payButton">Pay</button>
 
-    document.querySelectorAll("input[type=number]").forEach(input => {
-        input.addEventListener("input", calculateTotal);
+<footer>
+  <p>Complete your payment for printing, binding, or photocopy orders with QuickDocs.<br>
+  Once done, please share your order details with us on WhatsApp for quick processing.</p>
+  <p><strong>Contact Us:</strong><br>
+  📧 darshansalunkhe6412@gmail.com<br>
+  📞 +91 9912955971</p>
+  <p><strong>Terms & Conditions:</strong><br>
+  You agree to share information entered on this page with QuickDocs and Razorpay, adhering to applicable laws.</p>
+</footer>
+
+  </div>  <script>
+    let selectedTypes = [];
+    let pageCount = 1;
+    let copyCount = 1;
+
+    const priceMap = {
+      bw: 2.5,
+      color: 5,
+      rubrics: 10
+    };
+
+    document.querySelectorAll('.option').forEach(opt => {
+      opt.addEventListener('click', function() {
+        const type = this.dataset.type;
+        this.classList.toggle('selected');
+        if (selectedTypes.includes(type)) {
+          selectedTypes = selectedTypes.filter(t => t !== type);
+        } else {
+          selectedTypes.push(type);
+        }
+        updateTotal();
+      });
     });
 
-    function startPayment() {
-        const amount = calculateTotal();
-        if (amount <= 0) {
-            alert("Please enter quantities to proceed.");
-            return;
-        }
-
-        var options = {
-            "key": "RAZORPAY_API_KEY", // Replace with your Razorpay API key
-            "amount": amount * 100, // in paise
-            "currency": "INR",
-            "name": "QuickDocs",
-            "description": "Print Services Payment",
-            "image": "", // Optional: add your logo URL
-            "handler": function (response){
-                alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
-            },
-            "prefill": {
-                "name": "",
-                "email": "",
-                "contact": ""
-            },
-            "theme": {
-                "color": "#008CBA"
-            }
-        };
-        var rzp = new Razorpay(options);
-        rzp.open();
+    function updateCount(val, type) {
+      if (type === 'pages') {
+        pageCount = Math.max(1, pageCount + val);
+        document.getElementById('pageCount').textContent = pageCount;
+      } else {
+        copyCount = Math.max(1, copyCount + val);
+        document.getElementById('copyCount').textContent = copyCount;
+      }
+      updateTotal();
     }
-</script>
 
-</body>
+    function updateTotal() {
+      let priceText = document.getElementById('priceText');
+      let payButton = document.getElementById('payButton');
+
+      if (selectedTypes.length === 0) {
+        priceText.textContent = "Please select at least one service option.";
+        payButton.textContent = "Pay";
+        return;
+      }
+
+      let total = 0;
+      selectedTypes.forEach(type => {
+        if (type === 'rubrics') {
+          total += priceMap[type] * copyCount;
+        } else {
+          total += priceMap[type] * pageCount * copyCount;
+        }
+      });
+
+      priceText.textContent = Total: ₹${total.toFixed(2)};
+      payButton.textContent = Pay ₹${total.toFixed(2)};
+    }
+
+    function payNow() {
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+
+      if (!email || !phone || selectedTypes.length === 0) {
+        alert("Please fill all details and select at least one service option.");
+        return;
+      }
+
+      let amount = 0;
+      selectedTypes.forEach(type => {
+        if (type === 'rubrics') {
+          amount += priceMap[type] * copyCount;
+        } else {
+          amount += priceMap[type] * pageCount * copyCount;
+        }
+      });
+
+      var options = {
+        key: "YOUR_RAZORPAY_KEY_ID",
+        amount: amount * 100,
+        currency: "INR",
+        name: "QuickDocs",
+        description: Payment for ${selectedTypes.join(', ').toUpperCase()} - ${pageCount} pages x ${copyCount} copies,
+        prefill: {
+          email: email,
+          contact: phone
+        },
+        theme: { color: "#1a237e" }
+      };
+      var rzp = new Razorpay(options);
+      rzp.open();
+    }
+  </script>  <script src="https://checkout.razorpay.com/v1/checkout.js"></script></body>
 </html>
