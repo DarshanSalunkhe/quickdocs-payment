@@ -86,13 +86,16 @@
     }
     footer {
       margin-top: 30px;
-      text-align: center;
+      text-align: left;
       font-size: 14px;
       color: #555;
+      background: #f5f5f5;
+      padding: 20px;
+      border-top: 1px solid #ddd;
     }
-    .footer-link {
+    footer h4 {
+      margin-top: 15px;
       color: #1a237e;
-      text-decoration: none;
     }
   </style>
 </head>
@@ -131,17 +134,22 @@
 
 <button class="pay-btn" onclick="payNow()" id="payButton">Pay</button>
 
-<footer>
-  <p>Complete your payment for printing, binding, or photocopy orders with QuickDocs.<br>
-  Once done, please share your order details with us on WhatsApp for quick processing.</p>
-  <p><strong>Contact Us:</strong><br>
-  📧 darshansalunkhe6412@gmail.com<br>
-  📞 +91 9912955971</p>
-  <p><strong>Terms & Conditions:</strong><br>
-  You agree to share information entered on this page with QuickDocs and Razorpay, adhering to applicable laws.</p>
-</footer>
+  </div>  <footer>
+    <h4>Contact Us</h4>
+    <p>Email: darshansalunkhe6412@gmail.com<br>
+    Phone: +91 9912955971</p><h4>Terms & Conditions</h4>
+<p>By placing an order on QuickDocs, you agree to share your information for the purpose of order fulfillment. We reserve the right to cancel or refuse any order in case of policy violation or unavailability.</p>
 
-  </div>  <script>
+<h4>Cancellation & Refunds</h4>
+<p>Orders once placed cannot be cancelled if already processed. Refunds are provided only in cases of double payment or printing errors from our side.</p>
+
+<h4>Privacy Policy</h4>
+<p>Your data is confidential and will only be used for order processing and customer support. We do not share your personal details with any third-party services.</p>
+
+<h4>Shipping Policy</h4>
+<p>We ensure all print orders are delivered on time as per your order confirmation. We thank you for trusting QuickDocs with your printing needs.</p>
+
+  </footer>  <script>
     let selectedTypes = [];
     let pageCount = 1;
     let copyCount = 1;
