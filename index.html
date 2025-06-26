@@ -33,24 +33,6 @@
       margin-top: 10px;
       margin-bottom: 5px;
     }
-    .service-options {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .service-options .option {
-      flex: 1;
-      margin: 0 5px;
-      padding: 10px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-    }
-    .service-options .option.selected {
-      border-color: #1a237e;
-      background-color: #e8eaf6;
-    }
     .counter {
       display: flex;
       align-items: center;
@@ -107,29 +89,43 @@
 <label for="phone">Phone</label>
 <input type="tel" id="phone" placeholder="Enter your phone">
 
-<label>Select the services you need</label>
-<div class="service-options">
-  <div class="option" data-type="bw">B/W Print</div>
-  <div class="option" data-type="color">Color Print</div>
-  <div class="option" data-type="rubrics">Rubrics</div>
+<label>Rubrics (₹2 each)</label>
+<div class="counter">
+  <button onclick="updateCount(-1, 'rubrics')">-</button>
+  <span id="rubrics">0</span>
+  <button onclick="updateCount(1, 'rubrics')">+</button>
 </div>
 
-<label>Select the number of pages in your document</label>
+<label>B/W Pages</label>
 <div class="counter">
-  <button onclick="updateCount(-1, 'pages')">-</button>
-  <span id="pageCount">1</span>
-  <button onclick="updateCount(1, 'pages')">+</button>
+  <button onclick="updateCount(-1, 'bwPages')">-</button>
+  <span id="bwPages">0</span>
+  <button onclick="updateCount(1, 'bwPages')">+</button>
 </div>
 
-<label>Select the number of copies</label>
+<label>B/W Copies</label>
 <div class="counter">
-  <button onclick="updateCount(-1, 'copies')">-</button>
-  <span id="copyCount">1</span>
-  <button onclick="updateCount(1, 'copies')">+</button>
+  <button onclick="updateCount(-1, 'bwCopies')">-</button>
+  <span id="bwCopies">1</span>
+  <button onclick="updateCount(1, 'bwCopies')">+</button>
+</div>
+
+<label>Color Pages</label>
+<div class="counter">
+  <button onclick="updateCount(-1, 'colorPages')">-</button>
+  <span id="colorPages">0</span>
+  <button onclick="updateCount(1, 'colorPages')">+</button>
+</div>
+
+<label>Color Copies</label>
+<div class="counter">
+  <button onclick="updateCount(-1, 'colorCopies')">-</button>
+  <span id="colorCopies">1</span>
+  <button onclick="updateCount(1, 'colorCopies')">+</button>
 </div>
 
 <div class="price-display">
-  <span id="priceText">Price will be calculated based on selection.</span>
+  <span id="priceText">Price will be calculated based on your selections.</span>
 </div>
 
 <button class="pay-btn" onclick="payNow()" id="payButton">Pay</button>
@@ -137,107 +133,67 @@
   </div>  <footer>
     <h4>Contact Us</h4>
     <p>Email: darshansalunkhe6412@gmail.com<br>
-    Phone: +91 9912955971</p><h4>Terms & Conditions</h4>
-<p>By placing an order on QuickDocs, you agree to share your information for the purpose of order fulfillment. We reserve the right to cancel or refuse any order in case of policy violation or unavailability.</p>
+    Phone: +91 9912955971</p><h4>Operational Address</h4>
+<p>H.No: 3-2-355, Avulamanda, Secunderabad, Telangana – 500003</p>
+
+<h4>Terms & Conditions</h4>
+<p><a href="terms.html" target="_blank">Click here to view our full Terms & Conditions</a></p>
 
 <h4>Cancellation & Refunds</h4>
-<p>Orders once placed cannot be cancelled if already processed. Refunds are provided only in cases of double payment or printing errors from our side.</p>
+<p>Orders once placed cannot be cancelled if already processed. Refunds are provided only in cases of double payment or printing errors from our side. Refunds are processed within 5–7 working days.</p>
 
 <h4>Privacy Policy</h4>
-<p>Your data is confidential and will only be used for order processing and customer support. We do not share your personal details with any third-party services.</p>
+<p>Your data is confidential and will only be used for order processing and customer support. We do not share your personal details with third parties. All sensitive data is securely handled through Razorpay’s payment gateway.</p>
 
 <h4>Shipping Policy</h4>
-<p>We ensure all print orders are delivered on time as per your order confirmation. We thank you for trusting QuickDocs with your printing needs.</p>
+<p>We ensure all print orders are delivered on time as per the confirmation. You will be notified about delivery timelines via WhatsApp/email. Thank you for choosing QuickDocs.</p>
 
   </footer>  <script>
-    let selectedTypes = [];
-    let pageCount = 1;
-    let copyCount = 1;
-
-    const priceMap = {
-      bw: 2.5,
-      color: 5,
-      rubrics: 10
-    };
-
-    document.querySelectorAll('.option').forEach(opt => {
-      opt.addEventListener('click', function() {
-        const type = this.dataset.type;
-        this.classList.toggle('selected');
-        if (selectedTypes.includes(type)) {
-          selectedTypes = selectedTypes.filter(t => t !== type);
-        } else {
-          selectedTypes.push(type);
-        }
-        updateTotal();
-      });
-    });
+    let rubrics = 0, bwPages = 0, bwCopies = 1, colorPages = 0, colorCopies = 1;
+    const rates = { rubrics: 2, bw: 2.5, color: 8 };
 
     function updateCount(val, type) {
-      if (type === 'pages') {
-        pageCount = Math.max(1, pageCount + val);
-        document.getElementById('pageCount').textContent = pageCount;
-      } else {
-        copyCount = Math.max(1, copyCount + val);
-        document.getElementById('copyCount').textContent = copyCount;
+      switch(type) {
+        case 'rubrics': rubrics = Math.max(0, rubrics + val); document.getElementById('rubrics').textContent = rubrics; break;
+        case 'bwPages': bwPages = Math.max(0, bwPages + val); document.getElementById('bwPages').textContent = bwPages; break;
+        case 'bwCopies': bwCopies = Math.max(1, bwCopies + val); document.getElementById('bwCopies').textContent = bwCopies; break;
+        case 'colorPages': colorPages = Math.max(0, colorPages + val); document.getElementById('colorPages').textContent = colorPages; break;
+        case 'colorCopies': colorCopies = Math.max(1, colorCopies + val); document.getElementById('colorCopies').textContent = colorCopies; break;
       }
       updateTotal();
     }
 
     function updateTotal() {
-      let priceText = document.getElementById('priceText');
-      let payButton = document.getElementById('payButton');
-
-      if (selectedTypes.length === 0) {
-        priceText.textContent = "Please select at least one service option.";
-        payButton.textContent = "Pay";
-        return;
-      }
-
-      let total = 0;
-      selectedTypes.forEach(type => {
-        if (type === 'rubrics') {
-          total += priceMap[type] * copyCount;
-        } else {
-          total += priceMap[type] * pageCount * copyCount;
-        }
-      });
-
-      priceText.textContent = Total: ₹${total.toFixed(2)};
-      payButton.textContent = Pay ₹${total.toFixed(2)};
+      const total = (rubrics * rates.rubrics) + (bwPages * bwCopies * rates.bw) + (colorPages * colorCopies * rates.color);
+      document.getElementById('priceText').textContent = Total: ₹${total.toFixed(2)};
+      document.getElementById('payButton').textContent = Pay ₹${total.toFixed(2)};
     }
 
     function payNow() {
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone').value;
 
-      if (!email || !phone || selectedTypes.length === 0) {
-        alert("Please fill all details and select at least one service option.");
+      if (!email || !phone) {
+        alert("Please fill in your email and phone number.");
         return;
       }
 
-      let amount = 0;
-      selectedTypes.forEach(type => {
-        if (type === 'rubrics') {
-          amount += priceMap[type] * copyCount;
-        } else {
-          amount += priceMap[type] * pageCount * copyCount;
-        }
-      });
+      const amount = (rubrics * rates.rubrics) + (bwPages * bwCopies * rates.bw) + (colorPages * colorCopies * rates.color);
+      const description = Rubrics: ${rubrics}, B/W: ${bwPages}x${bwCopies}, Color: ${colorPages}x${colorCopies};
 
-      var options = {
+      const options = {
         key: "YOUR_RAZORPAY_KEY_ID",
         amount: amount * 100,
         currency: "INR",
         name: "QuickDocs",
-        description: Payment for ${selectedTypes.join(', ').toUpperCase()} - ${pageCount} pages x ${copyCount} copies,
+        description: description,
         prefill: {
           email: email,
           contact: phone
         },
         theme: { color: "#1a237e" }
       };
-      var rzp = new Razorpay(options);
+      const rzp = new Razorpay(options);
       rzp.open();
     }
   </script>  <script src="https://checkout.razorpay.com/v1/checkout.js"></script></body>
