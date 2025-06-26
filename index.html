@@ -1,200 +1,143 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QuickDocs Payment</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #ffffff;
-      color: #333;
-    }
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    h2 {
-      color: #1a237e;
-      margin-bottom: 20px;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #333; }
+    .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+    h2 { color: #1a237e; margin-bottom: 20px; }
+    label { font-weight: bold; display: block; margin-top: 10px; margin-bottom: 5px; }
     input[type="email"], input[type="tel"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 10px;
-      margin-bottom: 5px;
+      width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;
     }
     .counter {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 15px;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 15px;
     }
     .counter button {
-      padding: 10px;
-      font-size: 18px;
-      border: none;
-      background-color: #1a237e;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
+      padding: 10px; font-size: 18px; border: none; background-color: #1a237e; color: white;
+      border-radius: 6px; cursor: pointer;
     }
-    .counter span {
-      padding: 0 20px;
-      font-size: 18px;
-    }
-    .price-display {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
+    .counter span { padding: 0 20px; font-size: 18px; }
+    .price-display { font-size: 18px; margin-bottom: 20px; }
     .pay-btn {
-      width: 100%;
-      padding: 15px;
-      background-color: #1a237e;
-      color: white;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      width: 100%; padding: 15px; background-color: #1a237e; color: white; font-size: 18px;
+      border: none; border-radius: 8px; cursor: pointer;
     }
     footer {
-      margin-top: 30px;
-      text-align: left;
-      font-size: 14px;
-      color: #555;
-      background: #f5f5f5;
-      padding: 20px;
-      border-top: 1px solid #ddd;
+      margin-top: 30px; text-align: left; font-size: 14px; color: #555;
+      background: #f5f5f5; padding: 20px; border-top: 1px solid #ddd;
     }
-    footer h4 {
-      margin-top: 15px;
-      color: #1a237e;
-    }
+    footer h4 { margin-top: 15px; color: #1a237e; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Payment Details</h2><label for="email">Email</label>
-<input type="email" id="email" placeholder="Enter your email">
+    <h2>QuickDocs Payment</h2>
 
-<label for="phone">Phone</label>
-<input type="tel" id="phone" placeholder="Enter your phone">
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="Enter your email" />
 
-<label>Rubrics (₹2 each)</label>
-<div class="counter">
-  <button onclick="updateCount(-1, 'rubrics')">-</button>
-  <span id="rubrics">0</span>
-  <button onclick="updateCount(1, 'rubrics')">+</button>
-</div>
+    <label for="phone">Phone</label>
+    <input type="tel" id="phone" placeholder="Enter your phone number" />
 
-<label>B/W Pages</label>
-<div class="counter">
-  <button onclick="updateCount(-1, 'bwPages')">-</button>
-  <span id="bwPages">0</span>
-  <button onclick="updateCount(1, 'bwPages')">+</button>
-</div>
+    <label>Rubrics (₹2 per sheet)</label>
+    <div class="counter">
+      <button class="minus" data-type="rubrics">-</button>
+      <span id="rubrics">0</span>
+      <button class="plus" data-type="rubrics">+</button>
+    </div>
 
-<label>B/W Copies</label>
-<div class="counter">
-  <button onclick="updateCount(-1, 'bwCopies')">-</button>
-  <span id="bwCopies">1</span>
-  <button onclick="updateCount(1, 'bwCopies')">+</button>
-</div>
+    <label>B/W Pages</label>
+    <div class="counter">
+      <button class="minus" data-type="bwPages">-</button>
+      <span id="bwPages">0</span>
+      <button class="plus" data-type="bwPages">+</button>
+    </div>
 
-<label>Color Pages</label>
-<div class="counter">
-  <button onclick="updateCount(-1, 'colorPages')">-</button>
-  <span id="colorPages">0</span>
-  <button onclick="updateCount(1, 'colorPages')">+</button>
-</div>
+    <label>B/W Copies</label>
+    <div class="counter">
+      <button class="minus" data-type="bwCopies">-</button>
+      <span id="bwCopies">1</span>
+      <button class="plus" data-type="bwCopies">+</button>
+    </div>
 
-<label>Color Copies</label>
-<div class="counter">
-  <button onclick="updateCount(-1, 'colorCopies')">-</button>
-  <span id="colorCopies">1</span>
-  <button onclick="updateCount(1, 'colorCopies')">+</button>
-</div>
+    <label>Color Pages</label>
+    <div class="counter">
+      <button class="minus" data-type="colorPages">-</button>
+      <span id="colorPages">0</span>
+      <button class="plus" data-type="colorPages">+</button>
+    </div>
 
-<div class="price-display">
-  <span id="priceText">Price will be calculated based on your selections.</span>
-</div>
+    <label>Color Copies</label>
+    <div class="counter">
+      <button class="minus" data-type="colorCopies">-</button>
+      <span id="colorCopies">1</span>
+      <button class="plus" data-type="colorCopies">+</button>
+    </div>
 
-<button class="pay-btn" onclick="payNow()" id="payButton">Pay</button>
+    <div class="price-display">
+      <span id="priceText">Total: ₹0.00</span>
+    </div>
 
-  </div>  <footer>
-    <h4>Contact Us</h4>
-    <p>Email: darshansalunkhe6412@gmail.com<br>
-    Phone: +91 9912955971</p><h4>Operational Address</h4>
-<p>H.No: 3-2-355, Avulamanda, Secunderabad, Telangana – 500003</p>
+    <button class="pay-btn" id="payButton">Pay ₹0.00</button>
+  </div>
 
-<h4>Terms & Conditions</h4>
-<p><a href="terms.html" target="_blank">Click here to view our full Terms & Conditions</a></p>
+  <footer>
+    <h4><a href="terms.html" target="_blank">Terms & Conditions</a></h4>
+    <h4>Contact: darshansalunkhe6412@gmail.com | +91 9912955971</h4>
+    <h4>Address: H.No: 3-2-355, Avulamanda, Secunderabad, Telangana – 500003</h4>
+  </footer>
 
-<h4>Cancellation & Refunds</h4>
-<p>Orders once placed cannot be cancelled if already processed. Refunds are provided only in cases of double payment or printing errors from our side. Refunds are processed within 5–7 working days.</p>
-
-<h4>Privacy Policy</h4>
-<p>Your data is confidential and will only be used for order processing and customer support. We do not share your personal details with third parties. All sensitive data is securely handled through Razorpay’s payment gateway.</p>
-
-<h4>Shipping Policy</h4>
-<p>We ensure all print orders are delivered on time as per the confirmation. You will be notified about delivery timelines via WhatsApp/email. Thank you for choosing QuickDocs.</p>
-
-  </footer>  <script>
-    let rubrics = 0, bwPages = 0, bwCopies = 1, colorPages = 0, colorCopies = 1;
-    const rates = { rubrics: 2, bw: 2.5, color: 8 };
-
-    function updateCount(val, type) {
-      switch(type) {
-        case 'rubrics': rubrics = Math.max(0, rubrics + val); document.getElementById('rubrics').textContent = rubrics; break;
-        case 'bwPages': bwPages = Math.max(0, bwPages + val); document.getElementById('bwPages').textContent = bwPages; break;
-        case 'bwCopies': bwCopies = Math.max(1, bwCopies + val); document.getElementById('bwCopies').textContent = bwCopies; break;
-        case 'colorPages': colorPages = Math.max(0, colorPages + val); document.getElementById('colorPages').textContent = colorPages; break;
-        case 'colorCopies': colorCopies = Math.max(1, colorCopies + val); document.getElementById('colorCopies').textContent = colorCopies; break;
-      }
-      updateTotal();
-    }
-
-    function updateTotal() {
-      const total = (rubrics * rates.rubrics) + (bwPages * bwCopies * rates.bw) + (colorPages * colorCopies * rates.color);
-      document.getElementById('priceText').textContent = Total: ₹${total.toFixed(2)};
-      document.getElementById('payButton').textContent = Pay ₹${total.toFixed(2)};
-    }
-
-    function payNow() {
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
-
-      if (!email || !phone) {
-        alert("Please fill in your email and phone number.");
-        return;
-      }
-
-      const amount = (rubrics * rates.rubrics) + (bwPages * bwCopies * rates.bw) + (colorPages * colorCopies * rates.color);
-      const description = Rubrics: ${rubrics}, B/W: ${bwPages}x${bwCopies}, Color: ${colorPages}x${colorCopies};
-
-      const options = {
-        key: "YOUR_RAZORPAY_KEY_ID",
-        amount: amount * 100,
-        currency: "INR",
-        name: "QuickDocs",
-        description: description,
-        prefill: {
-          email: email,
-          contact: phone
-        },
-        theme: { color: "#1a237e" }
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const counts = {
+        rubrics: 0, bwPages: 0, bwCopies: 1, colorPages: 0, colorCopies: 1
       };
-      const rzp = new Razorpay(options);
-      rzp.open();
-    }
-  </script>  <script src="https://checkout.razorpay.com/v1/checkout.js"></script></body>
+      const rates = { rubrics: 2, bw: 2.5, color: 8 };
+
+      function updateTotal() {
+        const total = (counts.rubrics * rates.rubrics) +
+                      (counts.bwPages * counts.bwCopies * rates.bw) +
+                      (counts.colorPages * counts.colorCopies * rates.color);
+        document.getElementById('priceText').textContent = `Total: ₹${total.toFixed(2)}`;
+        document.getElementById('payButton').textContent = `Pay ₹${total.toFixed(2)}`;
+        return total;
+      }
+
+      document.querySelectorAll('.plus').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-type');
+          counts[key]++;
+          document.getElementById(key).textContent = counts[key];
+          updateTotal();
+        });
+      });
+
+      document.querySelectorAll('.minus').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-type');
+          const min = key.includes('Copies') ? 1 : 0;
+          counts[key] = Math.max(min, counts[key] - 1);
+          document.getElementById(key).textContent = counts[key];
+          updateTotal();
+        });
+      });
+
+      document.getElementById('payButton').addEventListener('click', () => {
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const total = updateTotal();
+        if (!email || !phone) {
+          alert('Please enter both email and phone.');
+          return;
+        }
+        alert('🧾 Simulated payment for ₹' + total.toFixed(2));
+      });
+
+      updateTotal();
+    });
+  </script>
+</body>
 </html>
